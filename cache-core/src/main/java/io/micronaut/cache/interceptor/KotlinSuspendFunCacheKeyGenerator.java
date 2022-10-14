@@ -32,11 +32,15 @@ public class KotlinSuspendFunCacheKeyGenerator extends DefaultCacheKeyGenerator 
 
     @Override
     public Object generateKey(AnnotationMetadata annotationMetadata, Object... params) {
-        if (params == null || params.length == 0) {
+        if (params == null || params.length == 0 || !isContinuation(params[params.length - 1])) {
             return super.generateKey(annotationMetadata, params);
         } else {
             Object[] usableParams = Arrays.copyOfRange(params, 0, params.length - 1);
             return super.generateKey(annotationMetadata, usableParams);
         }
+    }
+
+    private boolean isContinuation(Object param) {
+        return param != null && "kotlin.couroutines.Continuation".equals(param.getClass().getName());
     }
 }
